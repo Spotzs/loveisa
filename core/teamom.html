@@ -13,7 +13,7 @@
       font-family: 'Courier Prime', monospace;
       position: relative;
     }
-    /* Preloader overlay */
+
     #preloader {
       position: absolute;
       inset: 0;
@@ -27,9 +27,7 @@
       cursor: pointer;
       user-select: none;
     }
-    /* Main content container */
     #main { opacity: 0; transition: opacity 1s ease; }
-    /* Background + overlay */
     body {
       background: url('../images/IMG_5333.jpg') center/cover no-repeat;
     }
@@ -40,7 +38,6 @@
       background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(230,92,143,0.15));
       z-index: 1;
     }
-  /* Visualizer canvas */
   #visualizer {
     position: fixed;
     bottom: 5%;
@@ -54,7 +51,6 @@
     box-shadow: 0 0 15px rgba(255, 102, 204, 0.8);
     background: linear-gradient(90deg, rgba(0,0,0,0.7), rgba(30,30,30,0.9));
   }
-    /* Lyrics styling */
     #lyrics-normal, #lyrics-pink {
       position: fixed;
       top: 30%;
@@ -105,7 +101,6 @@
       font-weight: bold;
       text-shadow: 0 0 8px rgba(255,102,204,0.8);
     }
-    /* Grid styling */
     #grid {
       position: absolute;
       top: 50%; left: 50%;
@@ -126,7 +121,6 @@
       50% { transform: translate(1px,-1px); }
       75% { transform: translate(-1px,-1px); }
     }
-    /* Floating hearts & flowers */
     .heart, .heart-flower {
       position: absolute;
       font-size: 25px;
@@ -214,7 +208,6 @@
   <div id="lyrics-pink"><p>Nuts</p></div>
   <div id="main"><div id="grid"></div><canvas id="measure" style="display:none;"></canvas></div>
 
-  <!-- Added buttons and display elements for capture functionality -->
   <div id="capture-controls" style="position: fixed; bottom: 10%; left: 50%; transform: translateX(-50%); z-index: 7; text-align: center; color: white; font-family: 'Courier Prime', monospace;">
     <div id="current-line" style="margin-top: 0.5rem; font-size: 1rem;"></div>
     <textarea id="timestamps-output" style="margin-top: 0.5rem; width: 300px; height: 100px; display: none; resize: none; font-family: monospace;"></textarea>
@@ -233,7 +226,6 @@
     const lyricsPink = document.getElementById('lyrics-pink');
     let gridStarted = false;
 
-    // Timestamp capture variables
   const currentLineDiv = document.getElementById('current-line');
   const timestampsOutput = document.getElementById('timestamps-output');
   const lyricsLines = Array.from(document.querySelectorAll('#lyrics-normal p'));
@@ -249,7 +241,6 @@
     }
   }
 
-    // Array of timestamps (in seconds) for each lyric line
     let lyricTimestamps = [
       8.28,
       12.541333,
@@ -274,7 +265,6 @@
       66.76
     ];
 
-    // Highlight the current lyric line based on audio time
     function highlightLyrics(currentTime) {
       const lyrics = document.querySelectorAll('#lyrics-normal p');
       let currentIndex = 0;
@@ -310,7 +300,7 @@
       }
       bgm.play();
       startVisualizer();
-      createHeartsAndFlowers(); // Start hearts and flowers animation early
+      createHeartsAndFlowers(); 
     });
 
     bgm.addEventListener('timeupdate', () => {
@@ -396,7 +386,6 @@
       }, k*5));
     }
 
-    // Visualizer setup
     const canvas = document.getElementById('visualizer');
     const ctx = canvas.getContext('2d');
     let audioCtx, analyser, source, dataArray, bufferLength, animationId;
@@ -436,14 +425,12 @@
       let barHeight;
       let x = 0;
 
-      // Pulsing glow effect variables
       const time = Date.now() * 0.005;
       const glowIntensity = (Math.sin(time) + 1) / 2 * 20 + 10; // oscillates between 10 and 30
 
       for (let i = 0; i < bufferLength; i++) {
         barHeight = dataArray[i] / 2;
 
-        // Create vertical gradient for each bar
         const gradient = ctx.createLinearGradient(0, canvas.clientHeight - barHeight, 0, canvas.clientHeight);
         gradient.addColorStop(0, '#ff99cc');
         gradient.addColorStop(1, '#ff66cc');
@@ -452,7 +439,6 @@
         ctx.shadowColor = `rgba(255,102,204,0.8)`;
         ctx.shadowBlur = glowIntensity;
 
-        // Draw rounded rectangle for bar
         const radius = barWidth / 2;
         const y = canvas.clientHeight - barHeight;
         roundRect(ctx, x, y, barWidth, barHeight, radius);
@@ -461,7 +447,6 @@
       }
     }
 
-    // Helper function to draw rounded rectangles
     function roundRect(ctx, x, y, width, height, radius) {
       ctx.beginPath();
       ctx.moveTo(x + radius, y);
@@ -476,7 +461,6 @@
       ctx.closePath();
       ctx.fill();
     }
-    // Function to update lyrics glow effect based on audio amplitude
     function updateLyricsEffect() {
       const lyrics = document.querySelectorAll('#lyrics-normal p');
       const linesCount = lyrics.length;
@@ -489,7 +473,6 @@
         }
         const avg = sum / segmentSize;
 
-        // Map average amplitude to glow intensity and color saturation
         const glow = Math.min(40, avg);
         const saturation = Math.min(100, avg * 1.5);
 
