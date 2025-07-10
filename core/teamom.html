@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trust Me — Lil Peep Aesthetic</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body, html {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Courier Prime', monospace;
+      position: relative;
+    }
+    /* Preloader overlay */
+    #preloader {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #2c003e, #e65c8f);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    /* Main content container */
+    #main { opacity: 0; transition: opacity 1s ease; }
+    /* Background + overlay */
+    body {
+      background: url('../images/IMG_5333.jpg') center/cover no-repeat;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(230,92,143,0.15));
+      z-index: 1;
+    }
+  /* Visualizer canvas */
+  #visualizer {
+    position: fixed;
+    bottom: 5%;
+    left: 5%;
+    transform: none;
+    width: 300px;
+    height: 100px;
+    z-index: 6;
+    pointer-events: none;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(255, 102, 204, 0.8);
+    background: linear-gradient(90deg, rgba(0,0,0,0.7), rgba(30,30,30,0.9));
+  }
+    /* Lyrics styling */
+    #lyrics-normal, #lyrics-pink {
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      width: 50%;
+      max-width: 600px;
+      z-index: 5;
+      text-align: center;
+      line-height: 1.4;
+      font-family: 'Courier Prime', monospace;
+      user-select: none;
+      animation: floatLyrics 6s ease-in-out infinite;
+    }
+    #lyrics-normal p {
+      color: #fff;
+      font-size: 1.3rem;
+      margin: 0.3rem 0;
+      padding: 0.2rem 0.5rem;
+      border-radius: 8px;
+      text-shadow: 0 0 8px rgba(255, 102, 204, 0.9);
+      cursor: default;
+      transition: all 0.3s ease;
+      display: block;
+      animation: colorPulse 4s ease-in-out infinite;
+    }
+    @keyframes flicker {
+      0%, 100% { opacity: 1; text-shadow: 0 0 5px rgba(0,0,0,0.7), 0 0 10px #FF66CC, 0 0 20px #FF66CC; }
+      50% { opacity: 0.8; text-shadow: 0 0 10px rgba(0,0,0,0.7), 0 0 20px #FF66CC, 0 0 30px #FF66CC; }
+    }
+    @keyframes floatText {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    #lyrics-pink {
+      display: none;
+    }
+    .fade-out {
+      animation: fadeOut 2s forwards;
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    #lyrics-pink p {
+      color: #FF66CC;
+      font-size: 2rem;
+      font-weight: bold;
+      text-shadow: 0 0 8px rgba(255,102,204,0.8);
+    }
+    /* Grid styling */
+    #grid {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(200, 4px);
+      grid-template-rows: repeat(80, 4px);
+      gap: 1px;
+      width: calc(200 * 5px - 1px);
+      height: calc(80 * 5px - 1px);
+    }
+    .cell { width: 4px; height: 4px; background: #222; opacity: 0; border-radius: 1px; filter: drop-shadow(0 0 3px rgba(255,102,204,0.7)); }
+    .cell.glitch { animation: glitch 1.5s infinite; }
+    @keyframes glitch {
+      0%,100% { transform: translate(0,0); }
+      25% { transform: translate(-1px,1px); }
+      50% { transform: translate(1px,-1px); }
+      75% { transform: translate(-1px,-1px); }
+    }
+    /* Floating hearts & flowers */
+    .heart, .heart-flower {
+      position: absolute;
+      font-size: 25px;
+      opacity: 0.5;
+      animation: float 3s infinite ease-in-out;
+      z-index: 3;
+    }
+    .float-down {
+      animation: floatDown 3s infinite ease-in-out;
+    }
+    .heart { color: #FF66CC; }
+    .heart-flower { color: #FF66CC; }
+    @keyframes float { 0% { transform: translateY(0) scale(0.8); opacity: 0.6; } 50% { transform: translateY(-80px) scale(1); opacity: 0.2; } 100% { transform: translateY(0) scale(0.8); opacity: 0.6; } }
+    @keyframes floatDown { 0% { transform: translateY(0) scale(0.8); opacity: 0.6; } 50% { transform: translateY(80px) scale(1); opacity: 0.2; } 100% { transform: translateY(0) scale(0.8); opacity: 0.6; } }
+  #kitty {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    width: 80px;
+    height: auto;
+    z-index: 20;
+  }
+  #cinna {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    width: 80px;
+    height: auto;
+    z-index: 20;
+  }
+  #pompom {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 80px;
+    height: auto;
+    z-index: 20;
+  }
+  #keroppi {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 80px;
+    height: auto;
+    z-index: 20;
+  }
+  </style>
+</style>
+</head>
+<body>
+  <div id="preloader">Undele para empezar</div>
+  <audio id="bgm" src="../audio/nuts.mp3"></audio>
+  <canvas id="visualizer"></canvas>
+
+  <img id="kitty" src="../images/kitty.png" alt="Kitty" />
+  <img id="cinna" src="../images/cinna.png" alt="Cinna" />
+  <img id="keroppi" src="../images/keroppi.png" alt="Keroppi" />
+  <img id="pompom" src="../images/pompom.png" alt="Pompom" />
+
+  <div id="lyrics-normal">
+    <!-- Todas las líneas normales -->
+    <p>I can see it in your eyes, that you wanna get out</p>
+    <p>I can see it in your eyes, that you need it right now</p>
+    <p>That you need it right now</p>
+    <p>That you wanna get out</p>
+    <p>That you need it right now</p>
+    <p>That you wanna get out</p>
+    <p>Yeah, I just wanna hear the sound</p>
+    <p>Drive our Camaros out of town</p>
+    <p>Baby, we could leave right now, whoa</p>
+    <p>Yeah, I just wanna feel alive</p>
+    <p>Baby, take your time</p>
+    <p>Smoking on this loud, whoa</p>
+    <p>Girl, you know you make my cold heart warm with a touch</p>
+    <p>One kiss, then we fuckin', I just can't get enough</p>
+    <p>Put it on me, that's the best part</p>
+    <p>Baby, the trust</p>
+    <p>Trust me, I got nothin' for you, other than love</p>
+    <p>I remember eatin' pussy on the back of the bus</p>
+    <p>I remember gettin' nookie 'til the Sun came up</p>
+    <p>All the places that you took me, no one came with us</p>
+    <p>Same hoes overlook me, now they on my...</p>
+  </div>
+
+  <div id="lyrics-pink"><p>Nuts</p></div>
+  <div id="main"><div id="grid"></div><canvas id="measure" style="display:none;"></canvas></div>
+
+  <!-- Added buttons and display elements for capture functionality -->
+  <div id="capture-controls" style="position: fixed; bottom: 10%; left: 50%; transform: translateX(-50%); z-index: 7; text-align: center; color: white; font-family: 'Courier Prime', monospace;">
+    <div id="current-line" style="margin-top: 0.5rem; font-size: 1rem;"></div>
+    <textarea id="timestamps-output" style="margin-top: 0.5rem; width: 300px; height: 100px; display: none; resize: none; font-family: monospace;"></textarea>
+  </div>
+
+  <div id="end-message" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: 'Courier Prime', monospace; font-size: 3rem; color: #FF66CC; text-shadow: 0 0 10px rgba(255, 102, 204, 1); z-index: 30; user-select: none;">
+    Te amo isabella
+    No hay hay algo mas bonito que tu sobre la tierra
+    Feliz cumpleaños mi niña
+  </div>
+
+  <script>
+    const bgm = document.getElementById('bgm');
+    const preloader = document.getElementById('preloader');
+    const lyricsNormal = document.getElementById('lyrics-normal');
+    const lyricsPink = document.getElementById('lyrics-pink');
+    let gridStarted = false;
+
+    // Timestamp capture variables
+  const currentLineDiv = document.getElementById('current-line');
+  const timestampsOutput = document.getElementById('timestamps-output');
+  const lyricsLines = Array.from(document.querySelectorAll('#lyrics-normal p'));
+  let captureActive = false;
+  let currentLineIndex = 0;
+  let capturedTimestamps = [];
+
+  function updateCurrentLineDisplay() {
+    if (currentLineIndex < lyricsLines.length) {
+      currentLineDiv.textContent = `Línea actual (${currentLineIndex + 1}/${lyricsLines.length}): ${lyricsLines[currentLineIndex].textContent}`;
+    } else {
+      currentLineDiv.textContent = 'Captura completada.';
+    }
+  }
+
+    // Array of timestamps (in seconds) for each lyric line
+    let lyricTimestamps = [
+      8.28,
+      12.541333,
+      17.279536,
+      18.621113,
+      20.24,
+      22.139934,
+      24.061333,
+      26.189333,
+      27.861333,
+      31.349333,
+      34.061333,
+      36.061333,
+      39.580408,
+      43.449198,
+      47.029333,
+      50.141333,
+      51.429333,
+      55.269333,
+      59.109333,
+      62.989333,
+      66.76
+    ];
+
+    // Highlight the current lyric line based on audio time
+    function highlightLyrics(currentTime) {
+      const lyrics = document.querySelectorAll('#lyrics-normal p');
+      let currentIndex = 0;
+
+      for (let i = 0; i < lyricTimestamps.length; i++) {
+        const start = lyricTimestamps[i];
+        const end = (i + 1 < lyricTimestamps.length) ? lyricTimestamps[i + 1] : Number.MAX_VALUE;
+        if (currentTime >= start && currentTime < end) {
+          currentIndex = i;
+          break;
+        }
+      }
+
+      lyrics.forEach((p, index) => {
+        if (index === currentIndex) {
+          p.style.color = '#FF66CC';
+          p.style.textShadow = '0 0 10px rgba(255, 102, 204, 1)';
+          p.style.transition = 'color 0.3s ease, text-shadow 0.3s ease';
+          p.style.fontWeight = 'bold';
+        } else {
+          p.style.color = 'hsl(320, 50%, 80%)';
+          p.style.textShadow = '0 0 5px rgba(255, 102, 204, 0.5)';
+          p.style.fontWeight = 'normal';
+        }
+      });
+    }
+
+    preloader.addEventListener('click', async () => {
+      preloader.style.display = 'none';
+      document.getElementById('main').style.opacity = 1;
+      if (audioCtx && audioCtx.state === 'suspended') {
+        await audioCtx.resume();
+      }
+      bgm.play();
+      startVisualizer();
+      createHeartsAndFlowers(); // Start hearts and flowers animation early
+    });
+
+    bgm.addEventListener('timeupdate', () => {
+      if (lyricTimestamps.length > 0) {
+        highlightLyrics(bgm.currentTime);
+      }
+
+      if (bgm.currentTime >= 50 && !lyricsPink._shown) {
+        lyricsPink._shown = true;
+        // fade out white lyrics
+        lyricsNormal.classList.add('fade-out');
+        setTimeout(() => { lyricsNormal.style.display = 'none'; }, 2000);
+        // show pink lyric
+        lyricsPink.style.display = 'block';
+        // spawn hearts/flowers
+        createHeartsAndFlowers();
+        // start grid once
+        if (!gridStarted) { startGridAnimation(); gridStarted = true; }
+      }
+
+      // Show "te amo isabella" message at the end of the song
+      if (bgm.currentTime >= bgm.duration) {
+        const endMessage = document.getElementById('end-message');
+        const lyricsPink = document.getElementById('lyrics-pink');
+        const grid = document.getElementById('grid');
+        const measure = document.getElementById('measure');
+        lyricsPink.style.display = 'none';
+        grid.style.display = 'none';
+        measure.style.display = 'none';
+        endMessage.style.display = 'block';
+      }
+    });
+
+    function createHeartsAndFlowers() {
+      const emojis = ['💗','❤️','🌸','🌺','💖','💕','🌷','🌹'];
+      for (let i = 0; i < 80; i++) {
+        const el = document.createElement('div');
+        el.className = 'heart-flower';
+        el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        el.style.left = Math.random()*100+'%';
+        if (Math.random() < 0.5) {
+          el.style.bottom = '-30px';
+        } else {
+          el.style.top = '-30px';
+          el.classList.add('float-down');
+        }
+        el.style.animationDelay = Math.random()*1.5+'s';
+        document.body.appendChild(el);
+      }
+    }
+
+    function startGridAnimation() {
+      const cols=200, rows=80, size=5;
+      const canvas = document.getElementById('measure');
+      canvas.width = cols*size; canvas.height = rows*size;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+      ctx.font = 'bold 100px Courier Prime'; ctx.fillText('Trust me,', canvas.width/2, canvas.height/2 - 80);
+      ctx.font = 'bold 80px Courier Prime'; ctx.fillText('I got nothing for you', canvas.width/2, canvas.height/2 + 10);
+      ctx.fillText('other than love', canvas.width/2, canvas.height/2 + 100);
+      const grid = document.getElementById('grid');
+      for (let i=0; i<cols*rows; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        grid.appendChild(cell);
+      }
+      const img = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+      const cells = grid.children;
+      const toLight = [];
+      for (let y=0; y<rows; y++) {
+        for (let x=0; x<cols; x++) {
+          const idx = ((Math.floor(y*size+size/2)*canvas.width) + Math.floor(x*size+size/2)) *4;
+          if (img[idx] > 128) toLight.push(y*cols+x);
+        }
+      }
+      toLight.forEach((i,k) => setTimeout(() => {
+        const cell = cells[i]; let step=0;
+        const t = setInterval(() => {
+          step++; cell.style.opacity = step/10; cell.style.background='#FF66CC';
+          if (Math.random()<0.01) cell.classList.add('glitch');
+          if (step===10) clearInterval(t);
+        },15);
+      }, k*5));
+    }
+
+    // Visualizer setup
+    const canvas = document.getElementById('visualizer');
+    const ctx = canvas.getContext('2d');
+    let audioCtx, analyser, source, dataArray, bufferLength, animationId;
+
+    function startVisualizer() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        source = audioCtx.createMediaElementSource(bgm);
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        analyser.fftSize = 256;
+        bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
+      }
+      resizeCanvas();
+      draw();
+    }
+
+    function resizeCanvas() {
+      canvas.width = canvas.clientWidth * window.devicePixelRatio;
+      canvas.height = canvas.clientHeight * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+    });
+
+    function draw() {
+      animationId = requestAnimationFrame(draw);
+      analyser.getByteFrequencyData(dataArray);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const barWidth = (canvas.clientWidth / bufferLength) * 2.5;
+      let barHeight;
+      let x = 0;
+
+      // Pulsing glow effect variables
+      const time = Date.now() * 0.005;
+      const glowIntensity = (Math.sin(time) + 1) / 2 * 20 + 10; // oscillates between 10 and 30
+
+      for (let i = 0; i < bufferLength; i++) {
+        barHeight = dataArray[i] / 2;
+
+        // Create vertical gradient for each bar
+        const gradient = ctx.createLinearGradient(0, canvas.clientHeight - barHeight, 0, canvas.clientHeight);
+        gradient.addColorStop(0, '#ff99cc');
+        gradient.addColorStop(1, '#ff66cc');
+
+        ctx.fillStyle = gradient;
+        ctx.shadowColor = `rgba(255,102,204,0.8)`;
+        ctx.shadowBlur = glowIntensity;
+
+        // Draw rounded rectangle for bar
+        const radius = barWidth / 2;
+        const y = canvas.clientHeight - barHeight;
+        roundRect(ctx, x, y, barWidth, barHeight, radius);
+
+        x += barWidth + 1;
+      }
+    }
+
+    // Helper function to draw rounded rectangles
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+      ctx.fill();
+    }
+    // Function to update lyrics glow effect based on audio amplitude
+    function updateLyricsEffect() {
+      const lyrics = document.querySelectorAll('#lyrics-normal p');
+      const linesCount = lyrics.length;
+      const segmentSize = Math.floor(dataArray.length / linesCount);
+
+      lyrics.forEach((p, index) => {
+        let sum = 0;
+        for (let i = index * segmentSize; i < (index + 1) * segmentSize; i++) {
+          sum += dataArray[i] || 0;
+        }
+        const avg = sum / segmentSize;
+
+        // Map average amplitude to glow intensity and color saturation
+        const glow = Math.min(40, avg);
+        const saturation = Math.min(100, avg * 1.5);
+
+        p.style.textShadow = `0 0 ${glow}px rgba(255, 102, 204, 1)`;
+        p.style.color = `hsl(320, ${saturation}%, 80%)`;
+        p.style.transition = 'color 0.05s ease, text-shadow 0.05s ease';
+      });
+    }
+  </script>
+</body>
+</html>
